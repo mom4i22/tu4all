@@ -27,13 +27,14 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    @Modifying
-    @Transactional
-    public void deleteByPostId(long id) {
+    public boolean deleteByPostId(long id) {
         try {
-            postRepository.removeByPostId(id);
+            PostDBO postDBO = postRepository.findById(id).get();
+            postRepository.delete(postDBO);
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage());
+            return false;
         }
     }
 

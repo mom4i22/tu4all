@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<PostDBO, Long> {
 
-    @Modifying
-    @Transactional
     void removeByPostId(long id);
 
 }

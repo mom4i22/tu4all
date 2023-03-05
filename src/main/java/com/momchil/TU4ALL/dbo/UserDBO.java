@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -16,7 +16,7 @@ public class UserDBO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId", nullable = false)
-    private long id;
+    private long userId;
 
     @Column(name = "ALIAS", unique = true)
     private String alias;
@@ -27,8 +27,11 @@ public class UserDBO {
     @Column(name = "EMAIL", unique = true)
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "DATE_OF_BIRTH")
-    private Timestamp dateOfBirth;
+    private Date dateOfBirth;
 
     @Column(name = "FACULTY")
     private String faculty;

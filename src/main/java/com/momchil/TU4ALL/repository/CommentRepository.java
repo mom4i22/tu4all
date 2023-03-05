@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentDBO, Long> {
 
-    @Modifying
-    @Transactional
     void removeByCommentId(long id);
 
 }
