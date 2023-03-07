@@ -18,19 +18,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/createUser")
+    @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestBody UserDBO userDBO) {
         userService.createUser(userDBO);
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok(userDBO);
     }
 
-    @PutMapping("/editUser/{id}")
+    @PutMapping("/edit-user/{id}")
     public ResponseEntity<?> editUser(@PathVariable long id, @RequestBody UserDBO userDBO) {
         userDBO = userService.editUser(id,userDBO);
         return ResponseEntity.ok(userDBO);
     }
 
-    @DeleteMapping("/deleteUser/{id}")
+    @DeleteMapping("/delete-user/{id}")
     public ResponseEntity<Map<String,Boolean>> deleteUser(@PathVariable long id) {
         boolean deleted = false;
         deleted = userService.deleteByUserId(id);
@@ -39,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("getUserByAlias/{alias}")
+    @GetMapping("get-user-by-alias/{alias}")
     public ResponseEntity<UserDBO> getUserByAlias(@PathVariable String alias) {
         UserDBO userDBO = userService.readByAlias(alias);
         return ResponseEntity.ok(userDBO);

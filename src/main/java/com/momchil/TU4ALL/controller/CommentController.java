@@ -3,6 +3,7 @@ package com.momchil.TU4ALL.controller;
 import com.momchil.TU4ALL.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @DeleteMapping("/delete-comment/{id}")
     public ResponseEntity<Map<String,Boolean>> deleteComment(@PathVariable long id) {
         boolean deleted = false;
         deleted = commentService.deleteCommentById(id);

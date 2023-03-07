@@ -2,6 +2,7 @@ package com.momchil.TU4ALL.service;
 
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.repository.UserRepository;
+import org.apache.catalina.User;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class UserService {
         return userRepository.findByAlias(alias);
     }
 
+    public UserDBO readById(long id) {
+        return userRepository.findById(id).get();
+    }
+
     public void createUser(UserDBO userDBO) {
         try {
             userRepository.save(userDBO);
@@ -39,7 +44,6 @@ public class UserService {
         user.setFaculty(userDBO.getFaculty());
         user.setFacultyNumber(userDBO.getFacultyNumber());
         user.setDateOfBirth(userDBO.getDateOfBirth());
-        user.setFriends(userDBO.getFriends());
         userRepository.save(user);
         return user;
     }

@@ -38,4 +38,23 @@ public class PostService {
         }
     }
 
+    public void createPost(PostDBO postDBO) {
+        try {
+            postRepository.save(postDBO);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public PostDBO editPost(long id, PostDBO postDBO) {
+        PostDBO post = postRepository.findById(id).get();
+        post.setText(postDBO.getText());
+        post.setContent(postDBO.getContent());
+        post.setCreationDate(postDBO.getCreationDate());
+        post.setComments(postDBO.getComments());
+        post.setCreator(post.getCreator());
+        postRepository.save(post);
+        return post;
+    }
+
 }

@@ -1,16 +1,18 @@
 package com.momchil.TU4ALL.dbo;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.sql.Date;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-@Setter
 @Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class UserDBO {
 
     @Id
@@ -38,9 +40,5 @@ public class UserDBO {
 
     @Column(name = "FACULTY_NUMBER", unique = true)
     private String facultyNumber;
-
-    @Column(name="FRIENDS")
-    @ElementCollection
-    private List<String> friends;
 
 }
