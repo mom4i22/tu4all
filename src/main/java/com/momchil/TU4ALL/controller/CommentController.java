@@ -1,12 +1,13 @@
 package com.momchil.TU4ALL.controller;
 
+import com.momchil.TU4ALL.dbo.CommentDBO;
+import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.service.CommentService;
+import com.momchil.TU4ALL.service.PostService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,27 @@ public class CommentController {
 
     private CommentService commentService;
 
-    public CommentController(CommentService commentService) {
+    private PostService postService;
+
+    public CommentController(CommentService commentService, PostService postService) {
         this.commentService = commentService;
+        this.postService = postService;
+    }
+
+    @PostMapping("/create-comment")
+    public ResponseEntity<?> createComment(@RequestParam Map<String,String> requestParams) {
+        String content = requestParams.get("content");
+        String text = requestParams.get("text");
+        String postId = requestParams.get("postId");
+        long timeMillis = System.currentTimeMillis();
+        PostDBO postDBO = postService.readById(Long.parseLong(postId));
+        CommentDBO commentDBO = new CommentDBO();
+        commentDBO.setContent(content);
+        commentDBO.setText(text);
+        commentDBO.setCreationDate(new Timestamp(timeMillis));
+        commentDBO.setPost(postDBO);
+        commentService.createComment(commentDBO);
+        return ResponseEntity.ok(commentDBO);
     }
 
     @DeleteMapping("/delete-comment/{id}")

@@ -17,6 +17,9 @@ public class CommentDBO {
     @Column(name = "COMMENT_ID", nullable = false)
     private long commentId;
 
+    @Column(name = "TEXT")
+    private String text;
+
     @Column(name = "CONTENT")
     private String content;
 

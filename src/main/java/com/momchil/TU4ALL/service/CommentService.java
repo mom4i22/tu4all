@@ -27,6 +27,14 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
+    public void createComment(CommentDBO commentDBO) {
+        try {
+            commentRepository.save(commentDBO);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
     public boolean deleteCommentById(long id) {
         try {
             CommentDBO commentDBO = commentRepository.findById(id).get();

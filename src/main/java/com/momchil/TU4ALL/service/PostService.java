@@ -23,6 +23,10 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
+    public PostDBO readById(long id) {
+        return postRepository.findById(id).get();
+    }
+
     public List<PostDBO> readAll() {
         return postRepository.findAll();
     }
