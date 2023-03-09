@@ -44,4 +44,13 @@ public class UserController {
         UserDBO userDBO = userService.readByAlias(alias);
         return ResponseEntity.ok(userDBO);
     }
+
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable long id, @RequestParam String password) {
+        UserDBO userDBO = userService.readById(id);
+        userDBO.setPassword(password);
+        userService.createUser(userDBO);
+        return ResponseEntity.ok("SUCCESS");
+    }
+
 }
