@@ -13,6 +13,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@RequestMapping("/friends")
 public class CommentController {
 
     private CommentService commentService;

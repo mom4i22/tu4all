@@ -44,6 +44,7 @@ public class UserService {
         user.setFaculty(userDBO.getFaculty());
         user.setFacultyNumber(userDBO.getFacultyNumber());
         user.setDateOfBirth(userDBO.getDateOfBirth());
+        user.setFriends(userDBO.getFriends());
         userRepository.save(user);
         return user;
     }

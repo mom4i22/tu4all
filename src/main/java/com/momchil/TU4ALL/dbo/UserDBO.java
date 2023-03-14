@@ -2,22 +2,21 @@ package com.momchil.TU4ALL.dbo;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import java.sql.Date;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 public class UserDBO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", nullable = false)
+    @Column(name = "USER_ID", nullable = false)
     private long userId;
 
     @Column(name = "ALIAS", unique = true)
@@ -40,5 +39,8 @@ public class UserDBO {
 
     @Column(name = "FACULTY_NUMBER", unique = true)
     private String facultyNumber;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<FriendDBO> friends = new ArrayList<>();
 
 }

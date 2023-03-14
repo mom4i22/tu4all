@@ -11,7 +11,7 @@ public class RoleDBO {
     @Column(name = "ID")
     private long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(name = "role_names", nullable = false,unique = true)
     private String name;
 
 }
