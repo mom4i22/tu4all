@@ -2,12 +2,9 @@ package com.momchil.TU4ALL.service;
 
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.repository.UserRepository;
-import org.apache.catalina.User;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,12 +13,15 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public UserDBO findUserByAlias(String alias) {
-        return userRepository.findByAlias(alias);
+    public UserDBO readByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public UserDBO readById(long id) {
@@ -29,6 +29,7 @@ public class UserService {
     }
 
     public void createUser(UserDBO userDBO) {
+        userDBO.setPassword(bCryptPasswordEncoder.encode(userDBO.getPassword()));
         try {
             userRepository.save(userDBO);
         } catch (Exception e) {
@@ -61,7 +62,6 @@ public class UserService {
     }
 
     public UserDBO readByAlias(String alias) {
-       UserDBO userDBO = userRepository.findByAlias(alias);
-       return userDBO;
+        return userRepository.findByAlias(alias);
     }
 }

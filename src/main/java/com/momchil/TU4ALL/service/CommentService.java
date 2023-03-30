@@ -3,7 +3,6 @@ package com.momchil.TU4ALL.service;
 import com.momchil.TU4ALL.dbo.CommentDBO;
 import com.momchil.TU4ALL.repository.CommentRepository;
 import com.momchil.TU4ALL.repository.PostRepository;
-import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;

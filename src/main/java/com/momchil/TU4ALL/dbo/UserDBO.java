@@ -1,8 +1,8 @@
 package com.momchil.TU4ALL.dbo;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class UserDBO {
 
     @Id
@@ -39,6 +38,9 @@ public class UserDBO {
 
     @Column(name = "FACULTY_NUMBER", unique = true)
     private String facultyNumber;
+
+    @Column(name = "ROLE")
+    private String role;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<FriendDBO> friends = new ArrayList<>();

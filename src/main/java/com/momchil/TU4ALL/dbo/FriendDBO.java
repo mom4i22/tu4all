@@ -1,11 +1,12 @@
 package com.momchil.TU4ALL.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "FRIENDS")
