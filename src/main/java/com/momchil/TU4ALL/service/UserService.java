@@ -5,6 +5,11 @@ import com.momchil.TU4ALL.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 
 @Service
 public class UserService {
@@ -30,6 +35,24 @@ public class UserService {
 
     public void createUser(UserDBO userDBO) {
         userDBO.setPassword(bCryptPasswordEncoder.encode(userDBO.getPassword()));
+        try {
+            userRepository.save(userDBO);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void createUserWithPicture(UserDBO userDBO, MultipartFile image) {
+        userDBO.setPassword(bCryptPasswordEncoder.encode(userDBO.getPassword()));
+        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+        if(fileName.contains("..")) {
+            logger.error("Not a valid file name");
+        }
+        try {
+            userDBO.setProfilePicture(Base64.getEncoder().encodeToString(image.getBytes()));
+        } catch (IOException e) {
+           logger.error(e.getMessage());
+        }
         try {
             userRepository.save(userDBO);
         } catch (Exception e) {

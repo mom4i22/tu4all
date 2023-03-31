@@ -39,6 +39,10 @@ public class UserDBO {
     @Column(name = "FACULTY_NUMBER", unique = true)
     private String facultyNumber;
 
+    @Column(name = "PROFILE_PICTURE")
+    @Lob
+    private String profilePicture;
+
     @Column(name = "ROLE")
     private String role;
 

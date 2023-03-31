@@ -4,6 +4,7 @@ import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +21,8 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    public ResponseEntity<?> createUser(@RequestBody UserDBO userDBO) {
-        userService.createUser(userDBO);
+    public ResponseEntity<?> createUser(@RequestBody UserDBO userDBO, @RequestParam("profilePic") MultipartFile image) {
+        userService.createUserWithPicture(userDBO, image);
         return ResponseEntity.ok(userDBO);
     }
 
