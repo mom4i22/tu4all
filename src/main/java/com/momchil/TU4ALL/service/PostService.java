@@ -3,6 +3,7 @@ package com.momchil.TU4ALL.service;
 import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.repository.PostRepository;
+import com.momchil.TU4ALL.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,12 +20,12 @@ public class PostService {
     static org.slf4j.Logger logger = LoggerFactory.getLogger(PostService.class);
 
     private PostRepository postRepository;
-    private UserService userService;
-   // private UserRepository userRepository;
 
-    public PostService(PostRepository postRepository, UserService userService) {
+    private UserRepository userRepository;
+
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public PostDBO readById(long id) {
@@ -52,7 +53,7 @@ public class PostService {
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
-        UserDBO userDBO = userService.readById(Long.parseLong(userId));
+        UserDBO userDBO = userRepository.findById(Long.parseLong(userId)).get();
         PostDBO postDBO = new PostDBO();
         postDBO.setText(text);
         try {
