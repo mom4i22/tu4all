@@ -6,6 +6,7 @@ import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -25,18 +26,11 @@ public class PostController {
     }
 
     @PostMapping("/create-post")
-    public ResponseEntity<PostDBO> createPost(@RequestParam Map<String, String> requestParams) {
+    public ResponseEntity<?> createPost(@RequestParam Map<String, String> requestParams, @RequestParam("content") MultipartFile content) {
         String text = requestParams.get("text");
-        String content = requestParams.get("content");
-        long timeMillis = System.currentTimeMillis();
         String userId = requestParams.get("userId");
-        UserDBO userDBO = userService.readById(Long.parseLong(userId));
-        PostDBO postDBO = new PostDBO();
-        postDBO.setText(text);
-        postDBO.setContent(content);
-        postDBO.setCreationDate(new Timestamp(timeMillis));
-        postDBO.setCreator(userDBO);
-        return ResponseEntity.ok(postDBO);
+        postService.createPost(userId,text,content);
+        return ResponseEntity.ok("Post created successfully");
     }
 
     @PutMapping("/edit-post/{id}")
