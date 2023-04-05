@@ -28,6 +28,9 @@ public class PostDBO {
     @Column(name = "creationDate")
     private Timestamp creationDate;
 
+    @Column(name="edit_date")
+    private Timestamp editDate;
+
     @ManyToOne
     @JoinColumn(name="CREATOR", nullable = false)
     private UserDBO creator;

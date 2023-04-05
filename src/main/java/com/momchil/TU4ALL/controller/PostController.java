@@ -25,7 +25,7 @@ public class PostController {
         this.userService = userService;
     }
 
-    @PostMapping("/create-post")
+    @PostMapping(value = "/create-post", headers = "content-type=multipart/*")
     public ResponseEntity<?> createPost(@RequestParam Map<String, String> requestParams, @RequestParam("content") MultipartFile content) {
         String text = requestParams.get("text");
         String userId = requestParams.get("userId");
@@ -34,9 +34,9 @@ public class PostController {
     }
 
     @PutMapping("/edit-post/{id}")
-    public ResponseEntity<?> editPost(@PathVariable long id, @RequestBody PostDBO postDBO) {
-        postDBO = postService.editPost(id, postDBO);
-        return ResponseEntity.ok(postDBO);
+    public ResponseEntity<?> editPost(@PathVariable long id, @RequestParam("text") String text) {
+        postService.editPost(id, text);
+        return ResponseEntity.ok("Post edited successfully");
     }
 
     @GetMapping("/")

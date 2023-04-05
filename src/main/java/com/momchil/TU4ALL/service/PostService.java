@@ -66,13 +66,11 @@ public class PostService {
         postRepository.save(postDBO);
     }
 
-    public PostDBO editPost(long id, PostDBO postDBO) {
+    public PostDBO editPost(long id, String text) {
+        long timeMillis = System.currentTimeMillis();
         PostDBO post = postRepository.findById(id).get();
-        post.setText(postDBO.getText());
-        post.setContent(postDBO.getContent());
-        post.setCreationDate(postDBO.getCreationDate());
-        post.setComments(postDBO.getComments());
-        post.setCreator(post.getCreator());
+        post.setText(text);
+        post.setEditDate(new Timestamp(timeMillis));
         postRepository.save(post);
         return post;
     }
