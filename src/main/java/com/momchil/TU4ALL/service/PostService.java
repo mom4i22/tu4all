@@ -36,17 +36,6 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public boolean deleteByPostId(long id) {
-        try {
-            PostDBO postDBO = postRepository.findById(id).get();
-            postRepository.delete(postDBO);
-            return true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return false;
-        }
-    }
-
     public void createPost(String userId, String text, MultipartFile content) {
         long timeMillis = System.currentTimeMillis();
         String fileName = StringUtils.cleanPath(content.getOriginalFilename());
@@ -73,6 +62,22 @@ public class PostService {
         post.setEditDate(new Timestamp(timeMillis));
         postRepository.save(post);
         return post;
+    }
+
+    public List<PostDBO> getPostsForUser(long id) {
+        UserDBO userDBO = userRepository.findById(id).get();
+        return postRepository.findAllByCreator(userDBO);
+    }
+
+    public boolean deleteByPostId(long id) {
+        try {
+            PostDBO postDBO = postRepository.findById(id).get();
+            postRepository.delete(postDBO);
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
 }

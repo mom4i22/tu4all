@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -39,7 +40,12 @@ public class PostController {
         return ResponseEntity.ok("Post edited successfully");
     }
 
-    @GetMapping("/")
+    @GetMapping("/get-user-posts/{id}")
+    public ResponseEntity<?> getUserPosts(@PathVariable long id) {
+        List<PostDBO> posts = postService.getPostsForUser(id);
+        UserDBO userDBO = userService.readById(id);
+        return ResponseEntity.ok(posts);
+    }
 
     @DeleteMapping("/delete-post/{id}")
     public ResponseEntity<Map<String, Boolean>> deletePost(@PathVariable  long id) {
