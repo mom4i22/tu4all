@@ -20,11 +20,11 @@ public class CommentDBO {
     @Column(name = "TEXT")
     private String text;
 
-    @Column(name = "CONTENT")
-    private String content;
-
     @Column(name = "CREATION_DATE")
     private Timestamp creationDate;
+
+    @Column(name = "EDIT_DATE")
+    private Timestamp editDate;
 
     @ManyToOne
     @JoinColumn(name="POST_ID",nullable = false)

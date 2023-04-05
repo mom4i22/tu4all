@@ -27,18 +27,22 @@ public class CommentController {
 
     @PostMapping("/create-comment")
     public ResponseEntity<?> createComment(@RequestParam Map<String,String> requestParams) {
-        String content = requestParams.get("content");
         String text = requestParams.get("text");
         String postId = requestParams.get("postId");
         long timeMillis = System.currentTimeMillis();
         PostDBO postDBO = postService.readById(Long.parseLong(postId));
         CommentDBO commentDBO = new CommentDBO();
-        commentDBO.setContent(content);
         commentDBO.setText(text);
         commentDBO.setCreationDate(new Timestamp(timeMillis));
         commentDBO.setPost(postDBO);
         commentService.createComment(commentDBO);
         return ResponseEntity.ok(commentDBO);
+    }
+
+    @PutMapping("/edit-comment/{id}")
+    public ResponseEntity<?> editComment(@PathVariable long id, @RequestParam("text") String text) {
+        commentService.editComment(id, text);
+        return ResponseEntity.ok("Comment edited successfully");
     }
 
     @DeleteMapping("/delete-comment/{id}")

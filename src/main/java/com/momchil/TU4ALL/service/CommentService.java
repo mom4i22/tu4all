@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -43,5 +44,13 @@ public class CommentService {
             logger.error(e.getMessage());
             return false;
         }
+    }
+
+    public void editComment(long id, String text) {
+        long timeMillis = System.currentTimeMillis();
+        CommentDBO commentDBO = commentRepository.findById(id).get();
+        commentDBO.setText(text);
+        commentDBO.setEditDate(new Timestamp(timeMillis));
+        commentRepository.save(commentDBO);
     }
 }
