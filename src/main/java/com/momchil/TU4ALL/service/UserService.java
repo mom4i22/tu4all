@@ -60,6 +60,28 @@ public class UserService {
         }
     }
 
+    public UserDBO editUserWithProfilePic(long id, UserDBO userDBO, MultipartFile profilePic) {
+        String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
+        if(fileName.contains("..")) {
+            logger.error("Not a valid file name");
+        }
+        UserDBO user = userRepository.findById(id).get();
+        user.setAlias(userDBO.getAlias());
+        user.setEmail(userDBO.getEmail());
+        user.setName(userDBO.getName());
+        user.setFaculty(userDBO.getFaculty());
+        user.setFacultyNumber(userDBO.getFacultyNumber());
+        user.setDateOfBirth(userDBO.getDateOfBirth());
+        try {
+            user.setProfilePicture(Base64.getEncoder().encodeToString(profilePic.getBytes()));
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        user.setFriends(userDBO.getFriends());
+        userRepository.save(user);
+        return user;
+    }
+
     public UserDBO editUser(long id, UserDBO userDBO) {
         UserDBO user = userRepository.findById(id).get();
         user.setAlias(userDBO.getAlias());

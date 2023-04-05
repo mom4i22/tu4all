@@ -27,8 +27,8 @@ public class UserController {
     }
 
     @PutMapping("/edit-user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable long id, @RequestBody UserDBO userDBO) {
-        userDBO = userService.editUser(id,userDBO);
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestBody UserDBO userDBO, @RequestParam("profilePic") MultipartFile profilePicture) {
+        userDBO = userService.editUserWithProfilePic(id,userDBO,profilePicture);
         return ResponseEntity.ok(userDBO);
     }
 
