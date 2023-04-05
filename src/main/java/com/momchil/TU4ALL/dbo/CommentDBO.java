@@ -30,4 +30,8 @@ public class CommentDBO {
     @JoinColumn(name="POST_ID",nullable = false)
     private PostDBO post;
 
+    @ManyToOne
+    @JoinColumn(name="USER_ID", nullable = false)
+    private UserDBO user;
+
 }
