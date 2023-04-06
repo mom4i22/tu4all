@@ -9,7 +9,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 
 @Service
 public class UserService {
@@ -42,17 +45,27 @@ public class UserService {
         }
     }
 
-    public void createUserWithPicture(UserDBO userDBO, MultipartFile image) {
-        userDBO.setPassword(bCryptPasswordEncoder.encode(userDBO.getPassword()));
-        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+    public void createUserWithPicture(String alias, String name, String email, String password, String dateOfBirth, String faculty, String facultyNumber, String role, MultipartFile profilePic) throws ParseException {
+        UserDBO userDBO = new UserDBO();
+        userDBO.setPassword(bCryptPasswordEncoder.encode(password));
+        String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
         try {
-            userDBO.setProfilePicture(Base64.getEncoder().encodeToString(image.getBytes()));
+            userDBO.setProfilePicture(Base64.getEncoder().encodeToString(profilePic.getBytes()));
         } catch (IOException e) {
            logger.error(e.getMessage());
         }
+        userDBO.setAlias(alias);
+        userDBO.setName(name);
+        userDBO.setEmail(email);
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
+        long millis = date.getTime();
+        userDBO.setDateOfBirth(new java.sql.Date(millis));
+        userDBO.setFaculty(faculty);
+        userDBO.setFacultyNumber(facultyNumber);
+        userDBO.setRole(role);
         try {
             userRepository.save(userDBO);
         } catch (Exception e) {
