@@ -2,8 +2,10 @@ package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.dbo.CommentDBO;
 import com.momchil.TU4ALL.dbo.PostDBO;
+import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.CommentService;
 import com.momchil.TU4ALL.service.PostService;
+import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,21 +22,27 @@ public class CommentController {
 
     private PostService postService;
 
-    public CommentController(CommentService commentService, PostService postService) {
+    private UserService userService;
+
+    public CommentController(CommentService commentService, PostService postService, UserService userService) {
         this.commentService = commentService;
         this.postService = postService;
+        this.userService = userService;
     }
 
     @PostMapping("/create-comment")
     public ResponseEntity<?> createComment(@RequestParam Map<String,String> requestParams) {
         String text = requestParams.get("text");
         String postId = requestParams.get("postId");
+        String userId = requestParams.get("userId");
         long timeMillis = System.currentTimeMillis();
         PostDBO postDBO = postService.readById(Long.parseLong(postId));
+        UserDBO userDBO = userService.readById(Long.parseLong(userId));
         CommentDBO commentDBO = new CommentDBO();
         commentDBO.setText(text);
         commentDBO.setCreationDate(new Timestamp(timeMillis));
         commentDBO.setPost(postDBO);
+        commentDBO.setUser(userDBO);
         commentService.createComment(commentDBO);
         return ResponseEntity.ok(commentDBO);
     }
