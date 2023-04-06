@@ -50,9 +50,15 @@ public class UserController {
 
 
     @PutMapping("/edit-user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable long id, @RequestBody UserDBO userDBO, @RequestParam("profilePic") MultipartFile profilePicture) {
-        userDBO = userService.editUserWithProfilePic(id,userDBO,profilePicture);
-        return ResponseEntity.ok(userDBO);
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam Map<String, String> requestParams, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
+        String alias = requestParams.get("alias");
+        String name = requestParams.get("name");
+        String email = requestParams.get("email");
+        String dateOfBirth = requestParams.get("dateOfBirth");
+        String faculty = requestParams.get("faculty");
+        String facultyNumber = requestParams.get("facultyNumber");
+        userService.editUserWithProfilePic(id,alias, name, email, dateOfBirth, faculty, facultyNumber,profilePicture);
+        return ResponseEntity.ok("Edit user successfully");
     }
 
     @DeleteMapping("/delete-user/{id}")

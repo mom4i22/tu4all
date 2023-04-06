@@ -73,26 +73,30 @@ public class UserService {
         }
     }
 
-    public UserDBO editUserWithProfilePic(long id, UserDBO userDBO, MultipartFile profilePic) {
+    public void editUserWithProfilePic(long id, String alias, String name, String email, String dateOfBirth, String faculty, String facultyNumber, MultipartFile profilePic) throws ParseException {
         String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
         UserDBO user = userRepository.findById(id).get();
-        user.setAlias(userDBO.getAlias());
-        user.setEmail(userDBO.getEmail());
-        user.setName(userDBO.getName());
-        user.setFaculty(userDBO.getFaculty());
-        user.setFacultyNumber(userDBO.getFacultyNumber());
-        user.setDateOfBirth(userDBO.getDateOfBirth());
+        user.setAlias(alias);
+        user.setEmail(email);
+        user.setName(name);
+        user.setFaculty(faculty);
+        user.setFacultyNumber(facultyNumber);
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
+        long millis = date.getTime();
+        user.setDateOfBirth(new java.sql.Date(millis));
         try {
             user.setProfilePicture(Base64.getEncoder().encodeToString(profilePic.getBytes()));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-        user.setFriends(userDBO.getFriends());
-        userRepository.save(user);
-        return user;
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     public UserDBO editUser(long id, UserDBO userDBO) {
