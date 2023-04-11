@@ -31,6 +31,9 @@ public class PostDBO {
     @Column(name="edit_date")
     private Timestamp editDate;
 
+    @Column(name = "like_count")
+    private long likeCount;
+
     @ManyToOne
     @JoinColumn(name="CREATOR", nullable = false)
     private UserDBO creator;

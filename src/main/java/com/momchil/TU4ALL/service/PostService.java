@@ -80,4 +80,10 @@ public class PostService {
         }
     }
 
+    public void likePost(long id) {
+        PostDBO postDBO = postRepository.findById(id).get();
+        postDBO.setLikeCount(postDBO.getLikeCount() + 1);
+        postRepository.save(postDBO);
+    }
+
 }

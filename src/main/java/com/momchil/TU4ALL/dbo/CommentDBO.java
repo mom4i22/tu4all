@@ -26,6 +26,9 @@ public class CommentDBO {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
+    @Column(name = "like_count")
+    private long likeCount;
+
     @ManyToOne
     @JoinColumn(name="POST_ID",nullable = false)
     private PostDBO post;

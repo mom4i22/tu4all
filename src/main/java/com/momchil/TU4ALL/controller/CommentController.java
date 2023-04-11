@@ -7,6 +7,7 @@ import com.momchil.TU4ALL.service.CommentService;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -60,5 +61,11 @@ public class CommentController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", deleted);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/like-comment/{id}")
+    public ResponseEntity<?> likeComment(@PathVariable long id) {
+        commentService.likeComment(id);
+        return ResponseEntity.ok("Liked post");
     }
 }
