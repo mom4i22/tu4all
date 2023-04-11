@@ -37,9 +37,25 @@ public class FriendController {
         List<FriendDBO> friends = userDBO.getFriends();
         friends.add(friendDBO);
         userDBO.setFriends(friends);
-        userService.editUser(id,userDBO);
-
+        userService.editUserFriends(id,userDBO);
         return ResponseEntity.ok("Friend request sent");
+    }
+
+    @PutMapping("/accept-friend/{id}")
+    public ResponseEntity<?> acceptFriend(@PathVariable long id) {
+       friendService.acceptFriend(id);
+       return ResponseEntity.ok("You are now friends!");
+    }
+
+    @PutMapping("/remove-friend/{id}")
+    public ResponseEntity<?> removeFriend(@PathVariable long id, @RequestParam("friendId")String friendId) {
+        UserDBO userDBO = userService.readById(id);
+        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
+        List<FriendDBO> friendDBOS = userDBO.getFriends();
+        friendDBOS.remove(friendDBO);
+        userDBO.setFriends(friendDBOS);
+        userService.editUserFriends(id,userDBO);
+        return ResponseEntity.ok("Friend removed");
     }
 
 }

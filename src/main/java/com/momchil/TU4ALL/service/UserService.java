@@ -112,6 +112,13 @@ public class UserService {
         return user;
     }
 
+    public UserDBO editUserFriends(long id, UserDBO userDBO) {
+        UserDBO user = userRepository.findById(id).get();
+        user.setFriends(userDBO.getFriends());
+        userRepository.save(user);
+        return user;
+    }
+
     public boolean deleteByUserId(long id) {
         try {
             UserDBO userDBO = userRepository.findById(id).get();

@@ -1,5 +1,6 @@
 package com.momchil.TU4ALL.service;
 
+import com.momchil.TU4ALL.Constants;
 import com.momchil.TU4ALL.dbo.FriendDBO;
 import com.momchil.TU4ALL.repository.FriendRepository;
 import org.slf4j.LoggerFactory;
@@ -34,4 +35,16 @@ public class FriendService {
             logger.error(e.getMessage());
         }
     }
+
+    public FriendDBO readById(long id) {
+        return friendRepository.findById(id).get();
+    }
+
+    public void acceptFriend(long id) {
+        FriendDBO friendDBO = friendRepository.findById(id).get();
+        friendDBO.setStatus(Constants.FRIEND_STATUS_ACCEPTED);
+        friendRepository.save(friendDBO);
+    }
+
+
 }
