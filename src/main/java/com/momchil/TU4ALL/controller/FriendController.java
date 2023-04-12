@@ -1,5 +1,6 @@
 package com.momchil.TU4ALL.controller;
 
+import com.momchil.TU4ALL.Constants;
 import com.momchil.TU4ALL.dbo.FriendDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.repository.FriendRepository;
@@ -32,6 +33,7 @@ public class FriendController {
 
     @PostMapping("/add-friend/{id}")
     public ResponseEntity<?> addFriend(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
+        friendDBO.setStatus(Constants.FRIEND_STATUS_REQUESTED);
         friendService.addFriend(friendDBO);
         UserDBO userDBO = userService.readById(id);
         List<FriendDBO> friends = userDBO.getFriends();
@@ -56,6 +58,18 @@ public class FriendController {
         userDBO.setFriends(friendDBOS);
         userService.editUserFriends(id,userDBO);
         return ResponseEntity.ok("Friend removed");
+    }
+
+    @PostMapping("/block-user/{id}")
+    public ResponseEntity<?> blockUser(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
+        friendDBO.setStatus(Constants.FRIEND_STATUS_BLOCKED);
+        friendService.addFriend(friendDBO);
+        UserDBO userDBO = userService.readById(id);
+        List<FriendDBO> friends = userDBO.getFriends();
+        friends.add(friendDBO);
+        userDBO.setFriends(friends);
+        userService.editUserFriends(id,userDBO);
+        return ResponseEntity.ok("User blocked");
     }
 
 }
