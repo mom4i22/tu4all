@@ -43,7 +43,6 @@ public class PostController {
     @GetMapping("/get-user-posts/{id}")
     public ResponseEntity<?> getUserPosts(@PathVariable long id) {
         List<PostDBO> posts = postService.getPostsForUser(id);
-        UserDBO userDBO = userService.readById(id);
         return ResponseEntity.ok(posts);
     }
 
@@ -60,6 +59,12 @@ public class PostController {
     public ResponseEntity<?> likePost(@PathVariable long id) {
         postService.likePost(id);
         return ResponseEntity.ok("Liked post");
+    }
+
+    @GetMapping("/get-timeline")
+    public ResponseEntity<List<PostDBO>> getTimeline(@RequestParam("userId") String userId) {
+        List<PostDBO> posts = postService.readAllByCreatorAndDate(Long.parseLong(userId));
+        return ResponseEntity.ok(posts);
     }
 
 }

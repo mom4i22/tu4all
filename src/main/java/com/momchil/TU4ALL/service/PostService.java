@@ -1,7 +1,9 @@
 package com.momchil.TU4ALL.service;
 
+import com.momchil.TU4ALL.dbo.FriendDBO;
 import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.repository.FriendRepository;
 import com.momchil.TU4ALL.repository.PostRepository;
 import com.momchil.TU4ALL.repository.UserRepository;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,12 @@ public class PostService {
 
     private UserRepository userRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    private FriendRepository friendRepository;
+
+    public PostService(PostRepository postRepository, UserRepository userRepository, FriendRepository friendRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.friendRepository = friendRepository;
     }
 
     public PostDBO readById(long id) {
@@ -86,4 +91,17 @@ public class PostService {
         postRepository.save(postDBO);
     }
 
+    public List<PostDBO> readAllByCreatorAndDate(long userId) {
+        UserDBO userDBO = userRepository.findById(userId).get();
+        List<FriendDBO> friendDBOS = userDBO.getFriends();
+        List<PostDBO> postDBOS = null;
+        for (FriendDBO friendDBO : friendDBOS) {
+            UserDBO user = userRepository.findByAlias(friendDBO.getAlias());
+            List<PostDBO> friendPosts = postRepository.findAllByCreator(user);
+            for(PostDBO friendPost : friendPosts) {
+                postDBOS.add(friendPost);
+            }
+        }
+        return postDBOS;
+    }
 }
