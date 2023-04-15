@@ -31,8 +31,24 @@ public class FriendController {
         return ResponseEntity.ok(friendDBOS);
     }
 
+//    @PostMapping("/add-friend/{id}")
+//    public ResponseEntity<?> addFriend(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
+//        friendDBO.setStatus(Constants.FRIEND_STATUS_REQUESTED);
+//        friendService.addFriend(friendDBO);
+//        UserDBO userDBO = userService.readById(id);
+//        List<FriendDBO> friends = userDBO.getFriends();
+//        friends.add(friendDBO);
+//        userDBO.setFriends(friends);
+//        userService.editUserFriends(id,userDBO);
+//        return ResponseEntity.ok("Friend request sent");
+//    }
+
     @PostMapping("/add-friend/{id}")
-    public ResponseEntity<?> addFriend(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
+    public ResponseEntity<?> addFriend(@PathVariable long id, @RequestParam("userId") String userId) {
+        UserDBO friendUserDBO = userService.readById(Long.parseLong(userId));
+        FriendDBO friendDBO = new FriendDBO();
+        friendDBO.setUser(friendUserDBO);
+        friendDBO.setAlias(friendUserDBO.getAlias());
         friendDBO.setStatus(Constants.FRIEND_STATUS_REQUESTED);
         friendService.addFriend(friendDBO);
         UserDBO userDBO = userService.readById(id);
