@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -95,12 +96,15 @@ public class PostService {
         UserDBO userDBO = userRepository.findById(userId).get();
         List<FriendDBO> friendDBOS = userDBO.getFriends();
         List<PostDBO> postDBOS = null;
+        long currentTime = System.currentTimeMillis();
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date date =  new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
+        long timeOneWeekAgo = date.getTime();
         for (FriendDBO friendDBO : friendDBOS) {
             UserDBO user = userRepository.findByAlias(friendDBO.getAlias());
             List<PostDBO> friendPosts = postRepository.findAllByCreator(user);
-            for(PostDBO friendPost : friendPosts) {
-                postDBOS.add(friendPost);
-            }
+          // List<PostDBO> friendPosts = postRepository.findAllByCreatorAndDate(user,new Timestamp(timeOneWeekAgo),new Timestamp(currentTime));
+            postDBOS.addAll(friendPosts);
         }
         return postDBOS;
     }
