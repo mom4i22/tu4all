@@ -1,14 +1,12 @@
 package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.dbo.PostDBO;
-import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

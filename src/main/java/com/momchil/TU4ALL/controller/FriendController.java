@@ -3,7 +3,6 @@ package com.momchil.TU4ALL.controller;
 import com.momchil.TU4ALL.Constants;
 import com.momchil.TU4ALL.dbo.FriendDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
-import com.momchil.TU4ALL.repository.FriendRepository;
 import com.momchil.TU4ALL.service.FriendService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
