@@ -46,6 +46,12 @@ public class UserDBO {
     @Column(name = "ROLE")
     private String role;
 
+    @Column(name = "LIKE_NOTIFICATIONS")
+    private long likeNotifications;
+
+    @Column(name = "COMMENT_NOTIFICATIONS")
+    private long commentNotifications;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<FriendDBO> friends = new ArrayList<>();
 

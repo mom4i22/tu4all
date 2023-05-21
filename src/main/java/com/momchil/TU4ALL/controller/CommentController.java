@@ -45,6 +45,8 @@ public class CommentController {
         commentDBO.setPost(postDBO);
         commentDBO.setUser(userDBO);
         commentService.createComment(commentDBO);
+        UserDBO creator = postDBO.getCreator();
+        creator.setCommentNotifications(creator.getCommentNotifications() + 1);
         return ResponseEntity.ok(commentDBO);
     }
 
@@ -63,9 +65,4 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/like-comment/{id}")
-    public ResponseEntity<?> likeComment(@PathVariable long id) {
-        commentService.likeComment(id);
-        return ResponseEntity.ok("Liked post");
-    }
 }

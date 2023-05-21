@@ -54,9 +54,4 @@ public class CommentService {
         commentRepository.save(commentDBO);
     }
 
-    public void likeComment(long id) {
-        CommentDBO commentDBO = commentRepository.findById(id).get();
-        commentDBO.setLikeCount(commentDBO.getLikeCount() + 1);
-        commentRepository.save(commentDBO);
-    }
 }

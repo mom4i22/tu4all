@@ -59,6 +59,12 @@ public class PostController {
         return ResponseEntity.ok("Liked post");
     }
 
+    @PutMapping("/unlike-post/{id}")
+    public ResponseEntity<?> unlikePost(@PathVariable long id) {
+        postService.unlikePost(id);
+        return ResponseEntity.ok("Unliked post");
+    }
+
     @GetMapping("/get-timeline")
     public ResponseEntity<List<PostDBO>> getTimeline(@RequestParam("userId") String userId) {
         List<PostDBO> posts = postService.readAllByCreatorAndDate(Long.parseLong(userId));
