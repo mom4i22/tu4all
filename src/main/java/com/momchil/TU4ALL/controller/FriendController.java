@@ -64,6 +64,18 @@ public class FriendController {
        return ResponseEntity.ok("You are now friends!");
     }
 
+//    @PutMapping("/decline-friend/{id}")
+//    public ResponseEntity<?> declineFriend(@PathVariable long id, @RequestParam("friendId")String friendId) {
+//        UserDBO userDBO = userService.readById(id);
+//        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
+//        List<FriendDBO> friendDBOS = userDBO.getFriends();
+//        friendDBOS.remove(friendDBO);
+//        userDBO.setFriends(friendDBOS);
+//        userService.editUserFriends(id,userDBO);
+//        return ResponseEntity.ok("Friend removed");
+//    }
+
+    //This method is also used for declining friend requests
     @PutMapping("/remove-friend/{id}")
     public ResponseEntity<?> removeFriend(@PathVariable long id, @RequestParam("friendId")String friendId) {
         UserDBO userDBO = userService.readById(id);
