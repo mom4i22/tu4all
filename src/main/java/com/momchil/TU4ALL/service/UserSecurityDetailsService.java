@@ -27,7 +27,7 @@ public class UserSecurityDetailsService implements UserDetailsService {
             return new SecurityUserDetails(user);
         }
         else {
-            throw new UsernameNotFoundException("User with this username and password was not found");
+            throw new UsernameNotFoundException("User with this email and password was not found");
         }
     }
 
