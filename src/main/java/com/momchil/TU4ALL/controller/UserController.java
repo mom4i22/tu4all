@@ -2,6 +2,7 @@ package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.UserService;
+import com.momchil.TU4ALL.utils.Roles;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,17 +26,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/create-user", headers = "content-type=multipart/*")
-    public ResponseEntity<?> createUser(@RequestParam Map<String, String> requestParams, @RequestParam("profilePic") MultipartFile profilePic) {
-        String alias = requestParams.get("alias");
-        String name = requestParams.get("name");
-        String email = requestParams.get("email");
-        String password = requestParams.get("password");
-        String dateOfBirth = requestParams.get("dateOfBirth");
-        String faculty = requestParams.get("faculty");
-        String facultyNumber = requestParams.get("facultyNumber");
-        String role = requestParams.get("role");
+    public ResponseEntity<?> createUser(@RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam String email,
+                                        @RequestParam("password") String password, @RequestParam("dateOfBirth") String dateOfBirth,
+                                        @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePic) {
         try {
-            userService.createUserWithPicture(alias, name, email, password, dateOfBirth, faculty, facultyNumber, role, profilePic);
+            userService.createUserWithPicture(alias, name, email, password, dateOfBirth, faculty, facultyNumber, Roles.ROLE_ADMIN.getValue(), profilePic);
         } catch (ParseException e) {
             logger.error(e.getMessage());
         }
@@ -50,23 +45,25 @@ public class UserController {
 
 
     @PutMapping("/edit-user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam Map<String, String> requestParams, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
-        String alias = requestParams.get("alias");
-        String name = requestParams.get("name");
-        String email = requestParams.get("email");
-        String dateOfBirth = requestParams.get("dateOfBirth");
-        String faculty = requestParams.get("faculty");
-        String facultyNumber = requestParams.get("facultyNumber");
-        userService.editUserWithProfilePic(id,alias, name, email, dateOfBirth, faculty, facultyNumber,profilePicture);
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam String email,
+                                      @RequestParam("password") String password, @RequestParam("dateOfBirth") String dateOfBirth,
+                                      @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
+//        String alias = requestParams.get("alias");
+//        String name = requestParams.get("name");
+//        String email = requestParams.get("email");
+//        String dateOfBirth = requestParams.get("dateOfBirth");
+//        String faculty = requestParams.get("faculty");
+//        String facultyNumber = requestParams.get("facultyNumber");
+        userService.editUserWithProfilePic(id, alias, name, email, dateOfBirth, faculty, facultyNumber, profilePicture);
         return ResponseEntity.ok("Edit user successfully");
     }
 
     @DeleteMapping("/delete-user/{id}")
-    public ResponseEntity<Map<String,Boolean>> deleteUser(@PathVariable long id) {
+    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable long id) {
         boolean deleted = false;
         deleted = userService.deleteByUserId(id);
-        Map<String,Boolean> response = new HashMap<>();
-        response.put("deleted",deleted);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", deleted);
         return ResponseEntity.ok(response);
     }
 
@@ -76,12 +73,12 @@ public class UserController {
         return ResponseEntity.ok(userDBO);
     }
 
-    @PutMapping("/change-password/{id}")
-    public ResponseEntity<?> changeUserPassword(@PathVariable long id, @RequestParam String password) {
-        UserDBO userDBO = userService.readById(id);
+    @PutMapping("/change-password/{email}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable String email, @RequestParam("password") String password) {
+        UserDBO userDBO = userService.readByEmail(email);
         userDBO.setPassword(password);
         userService.createUser(userDBO);
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok("Password successfully changed!");
     }
 
 }
