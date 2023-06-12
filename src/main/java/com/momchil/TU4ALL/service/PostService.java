@@ -42,15 +42,15 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void createPost(String userId, String text, MultipartFile content) {
+    public void createPost(Long userId, String description, MultipartFile content) {
         long timeMillis = System.currentTimeMillis();
         String fileName = StringUtils.cleanPath(content.getOriginalFilename());
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
-        UserDBO userDBO = userRepository.findById(Long.parseLong(userId)).get();
+        UserDBO userDBO = userRepository.findById(userId).get();
         PostDBO postDBO = new PostDBO();
-        postDBO.setText(text);
+        postDBO.setText(description);
         try {
             postDBO.setContent(Base64.getEncoder().encodeToString(content.getBytes()));
         } catch (IOException e) {

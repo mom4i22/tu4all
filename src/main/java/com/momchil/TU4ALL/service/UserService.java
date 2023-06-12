@@ -73,12 +73,12 @@ public class UserService {
         }
     }
 
-    public void editUserWithProfilePic(long id, String alias, String name, String email, String dateOfBirth, String faculty, String facultyNumber, MultipartFile profilePic) throws ParseException {
+    public void editUserWithProfilePic(String alias, String name, String email, String dateOfBirth, String faculty, String facultyNumber, MultipartFile profilePic) throws ParseException {
         String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
-        UserDBO user = userRepository.findById(id).get();
+        UserDBO user = userRepository.findByEmail(email);
         user.setAlias(alias);
         user.setEmail(email);
         user.setName(name);

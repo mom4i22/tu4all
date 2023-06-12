@@ -1,7 +1,7 @@
 package com.momchil.TU4ALL.utils;
 
 public enum Roles {
-    ROLE_USER("ROLE_USER"),
+    ROLE_USER("USER"),
     ROLE_ADMIN("ADMIN");
 
     private final String value;

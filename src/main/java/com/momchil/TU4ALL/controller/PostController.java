@@ -1,9 +1,13 @@
 package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.dbo.PostDBO;
+import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,10 +29,9 @@ public class PostController {
     }
 
     @PostMapping(value = "/create-post", headers = "content-type=multipart/*")
-    public ResponseEntity<?> createPost(@RequestParam Map<String, String> requestParams, @RequestParam("content") MultipartFile content) {
-        String text = requestParams.get("text");
-        String userId = requestParams.get("userId");
-        postService.createPost(userId,text,content);
+    public ResponseEntity<?> createPost(@RequestParam("description") String description, @RequestParam("email") String email, @RequestParam("content") MultipartFile content) {
+        UserDBO userDBO = userService.readByEmail(email);
+        postService.createPost(userDBO.getUserId(), description, content);
         return ResponseEntity.ok("Post created successfully");
     }
 

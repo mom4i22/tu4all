@@ -5,6 +5,7 @@ import com.momchil.TU4ALL.service.AuthenticationService;
 import com.momchil.TU4ALL.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000")

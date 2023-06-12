@@ -35,8 +35,8 @@ public class AuthenticationService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             String jwt = jwtUtil.generateToken(userDetails);
             logger.info("Authentication is successful");
-            logger.debug("Authentication is successful for user with data: {}", userDetails);
-            return new AuthenticationResponse(jwt);
+            logger.info("Authentication is successful for user with data: {}", userDetails);
+            return new AuthenticationResponse(jwt, userDetails.getUsername(), userDetails.getPassword());
         } catch (BadCredentialsException e) {
             logger.error("Authentication failed: " + e.getMessage());
             throw e;
