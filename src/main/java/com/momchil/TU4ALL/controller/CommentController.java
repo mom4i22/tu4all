@@ -32,13 +32,10 @@ public class CommentController {
     }
 
     @PostMapping("/create-comment")
-    public ResponseEntity<?> createComment(@RequestParam Map<String,String> requestParams) {
-        String text = requestParams.get("text");
-        String postId = requestParams.get("postId");
-        String userId = requestParams.get("userId");
+    public ResponseEntity<?> createComment(@RequestParam("text") String text, @RequestParam("postId") String postId, @RequestParam("email") String email) {
         long timeMillis = System.currentTimeMillis();
         PostDBO postDBO = postService.readById(Long.parseLong(postId));
-        UserDBO userDBO = userService.readById(Long.parseLong(userId));
+        UserDBO userDBO = userService.readByEmail(email);
         CommentDBO commentDBO = new CommentDBO();
         commentDBO.setText(text);
         commentDBO.setCreationDate(new Timestamp(timeMillis));

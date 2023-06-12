@@ -1,8 +1,8 @@
 package com.momchil.TU4ALL.service;
 
+import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.model.AuthenticationResponse;
 import com.momchil.TU4ALL.utils.JwtUtil;
-import com.momchil.TU4ALL.utils.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +18,14 @@ public class AuthenticationService {
     static org.slf4j.Logger logger = LoggerFactory.getLogger(PostService.class);
     private AuthenticationManager authenticationManager;
     private UserDetailsService userDetailsService;
+    private UserService userService;
     private JwtUtil jwtUtil;
 
     @Autowired
-    public AuthenticationService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+    public AuthenticationService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, UserService userService, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -33,10 +35,11 @@ public class AuthenticationService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDBO userDBO = userService.readByEmail(userDetails.getUsername());
             String jwt = jwtUtil.generateToken(userDetails);
             logger.info("Authentication is successful");
             logger.info("Authentication is successful for user with data: {}", userDetails);
-            return new AuthenticationResponse(jwt, userDetails.getUsername(), userDetails.getPassword());
+            return new AuthenticationResponse(jwt, userDBO.getEmail(), userDBO.getPassword(), userDBO.getUserId());
         } catch (BadCredentialsException e) {
             logger.error("Authentication failed: " + e.getMessage());
             throw e;

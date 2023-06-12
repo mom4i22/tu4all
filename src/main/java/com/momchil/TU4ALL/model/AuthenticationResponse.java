@@ -15,4 +15,6 @@ public class AuthenticationResponse {
 
     private String password;
 
+    private Long userId;
+
 }
