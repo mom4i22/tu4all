@@ -28,9 +28,9 @@ public class PostController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/create-post", headers = "content-type=multipart/*")
-    public ResponseEntity<?> createPost(@RequestParam("description") String description, @RequestParam("email") String email, @RequestParam("content") MultipartFile content) {
-        UserDBO userDBO = userService.readByEmail(email);
+    @PostMapping(value = "/create-post/{id}", headers = "content-type=multipart/*")
+    public ResponseEntity<?> createPost(@PathVariable long id, @RequestParam("description") String description, @RequestParam("content") MultipartFile content) {
+        UserDBO userDBO = userService.readById(id);
         postService.createPost(userDBO.getUserId(), description, content);
         return ResponseEntity.ok("Post created successfully");
     }
@@ -41,9 +41,9 @@ public class PostController {
         return ResponseEntity.ok("Post edited successfully");
     }
 
-    @GetMapping("/get-user-posts/{id}")
-    public ResponseEntity<?> getUserPosts(@PathVariable long id) {
-        List<PostDBO> posts = postService.getPostsForUser(id);
+    @GetMapping("/get-user-posts")
+    public ResponseEntity<?> getUserPosts(@RequestParam("userId") String id) {
+        List<PostDBO> posts = postService.getPostsForUser(Long.parseLong(id));
         return ResponseEntity.ok(posts);
     }
 

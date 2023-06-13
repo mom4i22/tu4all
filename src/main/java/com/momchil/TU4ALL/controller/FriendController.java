@@ -23,9 +23,9 @@ public class FriendController {
         this.userService = userService;
     }
 
-    @GetMapping("/get-friends/{id}")
-    public ResponseEntity<List<FriendDBO>> getAllFriends(@PathVariable long id) {
-        UserDBO userDBO = userService.readById(id);
+    @GetMapping("/get-friends")
+    public ResponseEntity<List<FriendDBO>> getAllFriends(@RequestParam("userId") String id) {
+        UserDBO userDBO = userService.readById(Long.parseLong(id));
         List<FriendDBO> friendDBOS = userDBO.getFriends();
         return ResponseEntity.ok(friendDBOS);
     }
@@ -58,8 +58,8 @@ public class FriendController {
         return ResponseEntity.ok("Friend request sent");
     }
 
-    @PutMapping("/accept-friend/{id}")
-    public ResponseEntity<?> acceptFriend(@PathVariable long id) {
+    @PutMapping("/accept-friend")
+    public ResponseEntity<?> acceptFriend(@RequestParam("friendUserId") long id) {
        friendService.acceptFriend(id);
        return ResponseEntity.ok("You are now friends!");
     }
@@ -88,7 +88,8 @@ public class FriendController {
     }
 
     @PostMapping("/block-user/{id}")
-    public ResponseEntity<?> blockUser(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
+    public ResponseEntity<?> blockUser(@PathVariable long id, @RequestParam("friendId") String friendId) {
+        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
         friendDBO.setStatus(Constants.FRIEND_STATUS_BLOCKED);
         friendService.addFriend(friendDBO);
         UserDBO userDBO = userService.readById(id);

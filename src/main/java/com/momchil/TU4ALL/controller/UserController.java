@@ -44,11 +44,11 @@ public class UserController {
 //    }
 
 
-    @PutMapping("/edit-user")
-    public ResponseEntity<?> editUser(@RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam String email,
+    @PutMapping("/edit-user/{id}")
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam String email,
                                       @RequestParam("password") String password, @RequestParam("dateOfBirth") String dateOfBirth,
                                       @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
-        userService.editUserWithProfilePic(alias, name, email, dateOfBirth, faculty, facultyNumber, profilePicture);
+        userService.editUserWithProfilePic(id, alias, name, email, dateOfBirth, faculty, facultyNumber, profilePicture);
         return ResponseEntity.ok("Edit user successfully");
     }
 
@@ -67,9 +67,9 @@ public class UserController {
         return ResponseEntity.ok(userDBO);
     }
 
-    @PutMapping("/change-password/{email}")
-    public ResponseEntity<?> changeUserPassword(@PathVariable String email, @RequestParam("password") String password) {
-        UserDBO userDBO = userService.readByEmail(email);
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable long id, @RequestParam("password") String password) {
+        UserDBO userDBO = userService.readById(id);
         userDBO.setPassword(password);
         userService.createUser(userDBO);
         return ResponseEntity.ok("Password successfully changed!");

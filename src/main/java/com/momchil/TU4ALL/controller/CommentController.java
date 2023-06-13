@@ -31,11 +31,11 @@ public class CommentController {
         this.userService = userService;
     }
 
-    @PostMapping("/create-comment")
-    public ResponseEntity<?> createComment(@RequestParam("text") String text, @RequestParam("postId") String postId, @RequestParam("email") String email) {
+    @PostMapping("/create-comment/{id}")
+    public ResponseEntity<?> createComment(@PathVariable long id, @RequestParam("text") String text, @RequestParam("postId") String postId) {
         long timeMillis = System.currentTimeMillis();
         PostDBO postDBO = postService.readById(Long.parseLong(postId));
-        UserDBO userDBO = userService.readByEmail(email);
+        UserDBO userDBO = userService.readById(id);
         CommentDBO commentDBO = new CommentDBO();
         commentDBO.setText(text);
         commentDBO.setCreationDate(new Timestamp(timeMillis));
@@ -53,8 +53,8 @@ public class CommentController {
         return ResponseEntity.ok("Comment edited successfully");
     }
 
-    @DeleteMapping("/delete-comment/{id}")
-    public ResponseEntity<Map<String,Boolean>> deleteComment(@PathVariable long id) {
+    @DeleteMapping("/delete-comment")
+    public ResponseEntity<Map<String,Boolean>> deleteComment(@RequestParam("commentId") long id) {
         boolean deleted = false;
         deleted = commentService.deleteCommentById(id);
         Map<String, Boolean> response = new HashMap<>();
