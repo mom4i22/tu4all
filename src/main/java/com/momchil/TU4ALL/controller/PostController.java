@@ -4,10 +4,8 @@ import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +17,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/posts")
 public class PostController {
+
+    static org.slf4j.Logger logger = LoggerFactory.getLogger(PostController.class);
 
     private PostService postService;
     private UserService userService;
@@ -41,9 +41,10 @@ public class PostController {
         return ResponseEntity.ok("Post edited successfully");
     }
 
-    @GetMapping("/get-user-posts")
-    public ResponseEntity<?> getUserPosts(@RequestParam("userId") String id) {
-        List<PostDBO> posts = postService.getPostsForUser(Long.parseLong(id));
+    @GetMapping(value = "/get-user-posts/{id}")
+    public ResponseEntity<?> getUserPosts(@PathVariable long id) {
+        logger.info(String.valueOf(id));
+        List<PostDBO> posts = postService.getPostsForUser(id);
         return ResponseEntity.ok(posts);
     }
 
@@ -68,9 +69,9 @@ public class PostController {
         return ResponseEntity.ok("Unliked post");
     }
 
-    @GetMapping("/get-timeline")
-    public ResponseEntity<List<PostDBO>> getTimeline(@RequestParam("userId") String userId) {
-        List<PostDBO> posts = postService.readAllByCreatorAndDate(Long.parseLong(userId));
+    @GetMapping("/get-timeline/{id}")
+    public ResponseEntity<List<PostDBO>> getTimeline(@PathVariable long id) {
+        List<PostDBO> posts = postService.readAllByCreatorAndDate(id);
         return ResponseEntity.ok(posts);
     }
 

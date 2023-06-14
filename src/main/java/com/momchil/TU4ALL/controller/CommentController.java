@@ -53,8 +53,8 @@ public class CommentController {
         return ResponseEntity.ok("Comment edited successfully");
     }
 
-    @DeleteMapping("/delete-comment")
-    public ResponseEntity<Map<String,Boolean>> deleteComment(@RequestParam("commentId") long id) {
+    @DeleteMapping("/delete-comment/{id}")
+    public ResponseEntity<Map<String,Boolean>> deleteComment(@PathVariable long id) {
         boolean deleted = false;
         deleted = commentService.deleteCommentById(id);
         Map<String, Boolean> response = new HashMap<>();

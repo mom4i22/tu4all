@@ -23,9 +23,9 @@ public class FriendController {
         this.userService = userService;
     }
 
-    @GetMapping("/get-friends")
-    public ResponseEntity<List<FriendDBO>> getAllFriends(@RequestParam("userId") String id) {
-        UserDBO userDBO = userService.readById(Long.parseLong(id));
+    @GetMapping("/get-friends/{id}")
+    public ResponseEntity<List<FriendDBO>> getAllFriends(@PathVariable long id) {
+        UserDBO userDBO = userService.readById(id);
         List<FriendDBO> friendDBOS = userDBO.getFriends();
         return ResponseEntity.ok(friendDBOS);
     }
