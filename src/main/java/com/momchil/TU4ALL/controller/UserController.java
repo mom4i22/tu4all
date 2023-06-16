@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -45,10 +46,9 @@ public class UserController {
 
 
     @PutMapping("/edit-user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam String email,
-                                      @RequestParam("password") String password, @RequestParam("dateOfBirth") String dateOfBirth,
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam("dateOfBirth") String dateOfBirth,
                                       @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
-        userService.editUserWithProfilePic(id, alias, name, email, dateOfBirth, faculty, facultyNumber, profilePicture);
+        userService.editUserWithProfilePic(id, alias, name, dateOfBirth, faculty, facultyNumber, profilePicture);
         return ResponseEntity.ok("Edit user successfully");
     }
 
@@ -73,6 +73,15 @@ public class UserController {
         userDBO.setPassword(password);
         userService.createUser(userDBO);
         return ResponseEntity.ok("Password successfully changed!");
+    }
+
+    @GetMapping("/get-people/{id}")
+    public ResponseEntity<List<UserDBO>> getPeople(@PathVariable long id) {
+        List<UserDBO> users = userService.readPeople(id);
+        if(users.size() == 0) {
+            logger.info("[getPeople] No other users found");
+        }
+        return ResponseEntity.ok(users);
     }
 
 }

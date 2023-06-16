@@ -1,6 +1,7 @@
 package com.momchil.TU4ALL.service;
 
 import com.momchil.TU4ALL.dbo.CommentDBO;
+import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.repository.CommentRepository;
 import com.momchil.TU4ALL.repository.PostRepository;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +35,17 @@ public class CommentService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public List<CommentDBO> readyByPost(long postId) {
+        PostDBO postDBO = postRepository.findById(postId).get();
+        List<CommentDBO> comments = commentRepository.findAllByPost(postDBO);
+        if(comments.size() == 0) {
+            logger.error("No comments retrieved for post with id " + postId);
+            comments = new ArrayList<>();
+        }
+
+        return comments;
     }
 
     public boolean deleteCommentById(long id) {

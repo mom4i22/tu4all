@@ -38,7 +38,5 @@ public class PostDBO {
     @JoinColumn(name="CREATOR", nullable = false)
     private UserDBO creator;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<CommentDBO> comments;
 
 }

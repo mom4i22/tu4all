@@ -29,7 +29,7 @@ public class AuthenticationService {
         this.jwtUtil = jwtUtil;
     }
 
-    public AuthenticationResponse authenticate(String username, String password)  {
+    public AuthenticationResponse authenticate(String username, String password) {
         logger.info("Authenticating");
 
         try {
@@ -39,7 +39,8 @@ public class AuthenticationService {
             String jwt = jwtUtil.generateToken(userDetails);
             logger.info("Authentication is successful");
             logger.info("Authentication is successful for user with data: {}", userDetails);
-            return new AuthenticationResponse(jwt, userDBO.getEmail(), userDBO.getPassword(), userDBO.getUserId());
+            return new AuthenticationResponse(jwt, userDBO.getEmail(), userDBO.getPassword(), userDBO.getUserId(), userDBO.getAlias(),
+                    userDBO.getName(), userDBO.getProfilePicture(), userDBO.getLikeNotifications(), userDBO.getCommentNotifications());
         } catch (BadCredentialsException e) {
             logger.error("Authentication failed: " + e.getMessage());
             throw e;

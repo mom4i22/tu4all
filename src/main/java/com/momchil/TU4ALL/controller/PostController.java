@@ -2,6 +2,8 @@ package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.model.LikeRequest;
+import com.momchil.TU4ALL.model.PostRequest;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.slf4j.LoggerFactory;
@@ -35,9 +37,9 @@ public class PostController {
         return ResponseEntity.ok("Post created successfully");
     }
 
-    @PutMapping("/edit-post/{id}")
-    public ResponseEntity<?> editPost(@PathVariable long id, @RequestParam("text") String text) {
-        postService.editPost(id, text);
+    @PutMapping(value = "/edit-post", headers = "content-type=application/json")
+    public ResponseEntity<?> editPost(@RequestBody PostRequest postRequest) {
+        postService.editPost(postRequest.getId(), postRequest.getText());
         return ResponseEntity.ok("Post edited successfully");
     }
 
@@ -57,21 +59,21 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/like-post/{id}")
-    public ResponseEntity<?> likePost(@PathVariable long id) {
-        postService.likePost(id);
+    @PutMapping("/like-post")
+    public ResponseEntity<?> likePost(@RequestBody LikeRequest likeRequest) {
+        postService.likePost(likeRequest.getPostId());
         return ResponseEntity.ok("Liked post");
     }
 
-    @PutMapping("/unlike-post/{id}")
-    public ResponseEntity<?> unlikePost(@PathVariable long id) {
-        postService.unlikePost(id);
+    @PutMapping("/unlike-post")
+    public ResponseEntity<?> unlikePost(@RequestBody LikeRequest likeRequest) {
+        postService.unlikePost(likeRequest.getPostId());
         return ResponseEntity.ok("Unliked post");
     }
 
-    @GetMapping("/get-timeline/{id}")
-    public ResponseEntity<List<PostDBO>> getTimeline(@PathVariable long id) {
-        List<PostDBO> posts = postService.readAllByCreatorAndDate(id);
+    @GetMapping("/get-timeline/{userId}")
+    public ResponseEntity<List<PostDBO>> getTimeline(@PathVariable long userId) {
+        List<PostDBO> posts = postService.readAllByCreatorAndDate(userId);
         return ResponseEntity.ok(posts);
     }
 

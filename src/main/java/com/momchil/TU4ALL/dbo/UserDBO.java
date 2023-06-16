@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -47,15 +46,12 @@ public class UserDBO {
     private String role;
 
     @Column(name = "LIKE_NOTIFICATIONS")
-    private Long likeNotifications;
+    private int likeNotifications;
 
     @Column(name = "COMMENT_NOTIFICATIONS")
-    private Long commentNotifications;
-
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<FriendDBO> friends = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<CommentDBO> comments;
+    private int commentNotifications;
 
 }
+
+//    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+//    private List<CommentDBO> comments = new ArrayList<>();

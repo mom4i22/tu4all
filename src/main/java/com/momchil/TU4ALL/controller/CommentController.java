@@ -3,15 +3,16 @@ package com.momchil.TU4ALL.controller;
 import com.momchil.TU4ALL.dbo.CommentDBO;
 import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.model.CreateCommentRequest;
 import com.momchil.TU4ALL.service.CommentService;
 import com.momchil.TU4ALL.service.PostService;
 import com.momchil.TU4ALL.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -32,19 +33,29 @@ public class CommentController {
     }
 
     @PostMapping("/create-comment/{id}")
-    public ResponseEntity<?> createComment(@PathVariable long id, @RequestParam("text") String text, @RequestParam("postId") String postId) {
+    public ResponseEntity<?> createComment(@PathVariable long id, @RequestBody CreateCommentRequest createCommentRequest) {
         long timeMillis = System.currentTimeMillis();
-        PostDBO postDBO = postService.readById(Long.parseLong(postId));
+        PostDBO postDBO = postService.readById(createCommentRequest.getPostId());
         UserDBO userDBO = userService.readById(id);
         CommentDBO commentDBO = new CommentDBO();
-        commentDBO.setText(text);
+        commentDBO.setText(createCommentRequest.getText());
         commentDBO.setCreationDate(new Timestamp(timeMillis));
         commentDBO.setPost(postDBO);
         commentDBO.setUser(userDBO);
         commentService.createComment(commentDBO);
         UserDBO creator = postDBO.getCreator();
+        if(creator.getCommentNotifications() == 0) {
+            creator.setCommentNotifications(1);
+        }
         creator.setCommentNotifications(creator.getCommentNotifications() + 1);
         return ResponseEntity.ok(commentDBO);
+    }
+
+    @GetMapping("/get-comments")
+    public ResponseEntity<List<CommentDBO>> getComments(@RequestParam("postId")  String postId) {
+        List<CommentDBO> comments = null;
+        comments = commentService.readyByPost(Long.parseLong(postId));
+        return ResponseEntity.ok(comments);
     }
 
     @PutMapping("/edit-comment/{id}")

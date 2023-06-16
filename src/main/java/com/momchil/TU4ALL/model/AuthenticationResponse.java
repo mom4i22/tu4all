@@ -17,4 +17,14 @@ public class AuthenticationResponse {
 
     private Long userId;
 
+    private String alias;
+
+    private String name;
+
+    private String profilePic;
+
+    private int likeNotifications;
+
+    private int commentNotifications;
+
 }

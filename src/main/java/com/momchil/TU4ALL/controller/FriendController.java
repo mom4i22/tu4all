@@ -1,10 +1,14 @@
 package com.momchil.TU4ALL.controller;
 
 import com.momchil.TU4ALL.Constants;
-import com.momchil.TU4ALL.dbo.FriendDBO;
+import com.momchil.TU4ALL.dbo.FriendshipDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
-import com.momchil.TU4ALL.service.FriendService;
+import com.momchil.TU4ALL.model.AddFriendRequest;
+import com.momchil.TU4ALL.model.BlockUserRequest;
+import com.momchil.TU4ALL.model.FriendRequestAction;
+import com.momchil.TU4ALL.service.FriendshipService;
 import com.momchil.TU4ALL.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,89 +19,90 @@ import java.util.List;
 @RequestMapping("/friends")
 public class FriendController {
 
-    private FriendService friendService;
+    private FriendshipService friendshipService;
     private UserService userService;
 
-    public FriendController(FriendService friendService, UserService userService) {
-        this.friendService = friendService;
+    public FriendController(FriendshipService friendService, UserService userService) {
+        this.friendshipService = friendService;
         this.userService = userService;
     }
 
-    @GetMapping("/get-friends/{id}")
-    public ResponseEntity<List<FriendDBO>> getAllFriends(@PathVariable long id) {
-        UserDBO userDBO = userService.readById(id);
-        List<FriendDBO> friendDBOS = userDBO.getFriends();
-        return ResponseEntity.ok(friendDBOS);
+    @GetMapping("/get-friends/{userId}")
+    public ResponseEntity<List<UserDBO>> getFriendsOfUser(@PathVariable("userId") long userId) {
+        try {
+            List<UserDBO> friends = friendshipService.getFriendsOfUser(userId);
+            return ResponseEntity.ok(friends);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-//    @PostMapping("/add-friend/{id}")
-//    public ResponseEntity<?> addFriend(@PathVariable long id, @RequestBody FriendDBO friendDBO) {
-//        friendDBO.setStatus(Constants.FRIEND_STATUS_REQUESTED);
-//        friendService.addFriend(friendDBO);
-//        UserDBO userDBO = userService.readById(id);
-//        List<FriendDBO> friends = userDBO.getFriends();
-//        friends.add(friendDBO);
-//        userDBO.setFriends(friends);
-//        userService.editUserFriends(id,userDBO);
-//        return ResponseEntity.ok("Friend request sent");
-//    }
-
-    @PostMapping("/add-friend/{id}")
-    public ResponseEntity<?> addFriend(@PathVariable long id, @RequestParam("userId") String userId) {
-        UserDBO friendUserDBO = userService.readById(Long.parseLong(userId));
-        FriendDBO friendDBO = new FriendDBO();
-        friendDBO.setUser(friendUserDBO);
-        friendDBO.setAlias(friendUserDBO.getAlias());
-        friendDBO.setStatus(Constants.FRIEND_STATUS_REQUESTED);
-        friendService.addFriend(friendDBO);
-        UserDBO userDBO = userService.readById(id);
-        List<FriendDBO> friends = userDBO.getFriends();
-        friends.add(friendDBO);
-        userDBO.setFriends(friends);
-        userService.editUserFriends(id,userDBO);
-        return ResponseEntity.ok("Friend request sent");
+    @GetMapping("/get-requests/{userId}")
+    public ResponseEntity<List<UserDBO>> getRequestsOfUser(@PathVariable("userId") long userId) {
+        try {
+            List<UserDBO> friends = friendshipService.getRequestsOfUser(userId);
+            return ResponseEntity.ok(friends);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @PutMapping("/accept-friend")
-    public ResponseEntity<?> acceptFriend(@RequestParam("friendUserId") long id) {
-       friendService.acceptFriend(id);
-       return ResponseEntity.ok("You are now friends!");
+    @GetMapping("/get-non-friends/{userId}")
+    public ResponseEntity<List<UserDBO>> getNonFriendUsers(@PathVariable long userId) {
+        try {
+            List<UserDBO> nonFriendUsers = friendshipService.getUsersNotFriendsOfUser(userId);
+            return ResponseEntity.ok(nonFriendUsers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-//    @PutMapping("/decline-friend/{id}")
-//    public ResponseEntity<?> declineFriend(@PathVariable long id, @RequestParam("friendId")String friendId) {
-//        UserDBO userDBO = userService.readById(id);
-//        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
-//        List<FriendDBO> friendDBOS = userDBO.getFriends();
-//        friendDBOS.remove(friendDBO);
-//        userDBO.setFriends(friendDBOS);
-//        userService.editUserFriends(id,userDBO);
-//        return ResponseEntity.ok("Friend removed");
-//    }
+
+    @PostMapping("/send-request/{userId}")
+    public ResponseEntity<String> sendFriendRequest(@PathVariable long userId, @RequestBody FriendRequestAction friendRequestAction) {
+        try {
+            friendshipService.sendFriendRequest(userId, friendRequestAction.getFriendUserId());
+            return ResponseEntity.ok("Friend request sent successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send friend request.");
+        }
+    }
+
+    @PutMapping("/accept-request/{userId}")
+    public ResponseEntity<String> acceptFriendRequest(@PathVariable long userId, @RequestBody FriendRequestAction friendRequestAction) {
+        try {
+            friendshipService.acceptFriendRequest(userId, friendRequestAction.getFriendUserId());
+            return ResponseEntity.ok("Friend request accepted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to accept friend request.");
+        }
+    }
 
     //This method is also used for declining friend requests
-    @PutMapping("/remove-friend/{id}")
-    public ResponseEntity<?> removeFriend(@PathVariable long id, @RequestParam("friendId")String friendId) {
-        UserDBO userDBO = userService.readById(id);
-        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
-        List<FriendDBO> friendDBOS = userDBO.getFriends();
-        friendDBOS.remove(friendDBO);
-        userDBO.setFriends(friendDBOS);
-        userService.editUserFriends(id,userDBO);
-        return ResponseEntity.ok("Friend removed");
+    @PutMapping("/remove-friend/{userId}")
+    public ResponseEntity<String> removeFriend(@PathVariable("userId") long userId, @RequestBody FriendRequestAction friendRequestAction) {
+        try {
+            friendshipService.removeFriend(userId,friendRequestAction.getFriendUserId());
+            return ResponseEntity.ok("Friend removed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to remove friend.");
+        }
     }
 
-    @PostMapping("/block-user/{id}")
-    public ResponseEntity<?> blockUser(@PathVariable long id, @RequestParam("friendId") String friendId) {
-        FriendDBO friendDBO = friendService.readById(Long.parseLong(friendId));
-        friendDBO.setStatus(Constants.FRIEND_STATUS_BLOCKED);
-        friendService.addFriend(friendDBO);
-        UserDBO userDBO = userService.readById(id);
-        List<FriendDBO> friends = userDBO.getFriends();
-        friends.add(friendDBO);
-        userDBO.setFriends(friends);
-        userService.editUserFriends(id,userDBO);
-        return ResponseEntity.ok("User blocked");
+    @PutMapping("/decline-request/{userId}")
+    public ResponseEntity<String> declineFriendRequest(@PathVariable("userId") long userId, @RequestBody FriendRequestAction friendRequestAction) {
+        try {
+            friendshipService.removeFriend(userId, friendRequestAction.getFriendUserId());
+            return ResponseEntity.ok("Friend request declined.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to remove friend.");
+        }
     }
+
+//todo TBD
+
+//    @PostMapping("/block-user/{id}")
+//    public ResponseEntity<?> blockUser(@PathVariable long id, @RequestBody BlockUserRequest blockUserRequest) {
+//    }
 
 }

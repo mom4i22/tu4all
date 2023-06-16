@@ -1,6 +1,8 @@
 package com.momchil.TU4ALL.service;
 
+import com.momchil.TU4ALL.dbo.FriendshipDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.repository.FriendshipRepository;
 import com.momchil.TU4ALL.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -23,9 +26,12 @@ public class UserService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private FriendshipRepository friendshipRepository;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FriendshipRepository friendshipRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.friendshipRepository = friendshipRepository;
     }
 
     public UserDBO readByEmail(String email) {
@@ -73,14 +79,13 @@ public class UserService {
         }
     }
 
-    public void editUserWithProfilePic(long id, String alias, String name, String email, String dateOfBirth, String faculty, String facultyNumber, MultipartFile profilePic) throws ParseException {
+    public void editUserWithProfilePic(long id, String alias, String name, String dateOfBirth, String faculty, String facultyNumber, MultipartFile profilePic) throws ParseException {
         String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
         if(fileName.contains("..")) {
             logger.error("Not a valid file name");
         }
         UserDBO user = userRepository.findById(id).get();
         user.setAlias(alias);
-        user.setEmail(email);
         user.setName(name);
         user.setFaculty(faculty);
         user.setFacultyNumber(facultyNumber);
@@ -99,6 +104,13 @@ public class UserService {
         }
     }
 
+    public List<UserDBO> readPeople(long id) {
+        if(id == 0) {
+            logger.error("Id is not correct" + id);
+        }
+        return userRepository.findAllExceptActiveUser(id);
+    }
+
     public UserDBO editUser(long id, UserDBO userDBO) {
         UserDBO user = userRepository.findById(id).get();
         user.setAlias(userDBO.getAlias());
@@ -107,14 +119,6 @@ public class UserService {
         user.setFaculty(userDBO.getFaculty());
         user.setFacultyNumber(userDBO.getFacultyNumber());
         user.setDateOfBirth(userDBO.getDateOfBirth());
-        user.setFriends(userDBO.getFriends());
-        userRepository.save(user);
-        return user;
-    }
-
-    public UserDBO editUserFriends(long id, UserDBO userDBO) {
-        UserDBO user = userRepository.findById(id).get();
-        user.setFriends(userDBO.getFriends());
         userRepository.save(user);
         return user;
     }
