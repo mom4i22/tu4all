@@ -17,7 +17,7 @@ public class FriendshipService {
     static org.slf4j.Logger logger = LoggerFactory.getLogger(FriendshipService.class);
 
     private FriendshipRepository friendshipRepository;
-    
+
     private UserRepository userRepository;
 
     public FriendshipService(FriendshipRepository friendshipRepository, UserRepository userRepository) {
@@ -86,11 +86,13 @@ public class FriendshipService {
 
     public void acceptFriendRequest(long userId, long friendId) {
         FriendshipDBO friendship = friendshipRepository.findFriendship(userId, friendId);
-        FriendshipDBO oldRecord = friendshipRepository.findOldRecords(userId);
-
+        FriendshipDBO oldRecord = null;
+        if (friendship == null && friendship.getStatus() != Constants.FRIEND_STATUS_REQUESTED) {
+            oldRecord = friendshipRepository.findOldRecords(userId);
+        }
         friendship.setStatus(Constants.FRIEND_STATUS_ACCEPTED);
 
-        if(oldRecord != null) {
+        if (oldRecord != null) {
             friendshipRepository.delete(oldRecord);
         }
 

@@ -61,6 +61,18 @@ public class PostService {
         postRepository.save(postDBO);
     }
 
+    public void createPostWithoutContent(long userId, String description){
+        long timeMillis = System.currentTimeMillis();
+
+        UserDBO userDBO = userRepository.findById(userId).get();
+        PostDBO postDBO = new PostDBO();
+        postDBO.setText(description);
+
+        postDBO.setCreationDate(new Timestamp(timeMillis));
+        postDBO.setCreator(userDBO);
+        postRepository.save(postDBO);
+    }
+
     public PostDBO editPost(long id, String text) {
         long timeMillis = System.currentTimeMillis();
         PostDBO post = postRepository.findById(id).get();

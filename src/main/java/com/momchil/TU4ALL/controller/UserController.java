@@ -61,15 +61,15 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("get-user-by-alias/{alias}")
+    @GetMapping("/get-user-by-alias/{alias}")
     public ResponseEntity<UserDBO> getUserByAlias(@PathVariable String alias) {
         UserDBO userDBO = userService.readByAlias(alias);
         return ResponseEntity.ok(userDBO);
     }
 
-    @PutMapping("/change-password/{id}")
-    public ResponseEntity<?> changeUserPassword(@PathVariable long id, @RequestParam("password") String password) {
-        UserDBO userDBO = userService.readById(id);
+    @PutMapping("/change-password/{email}")
+    public ResponseEntity<?> changeUserPassword(@PathVariable String email, @RequestParam("password") String password) {
+        UserDBO userDBO = userService.readByEmail(email);
         userDBO.setPassword(password);
         userService.createUser(userDBO);
         return ResponseEntity.ok("Password successfully changed!");

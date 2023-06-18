@@ -33,7 +33,12 @@ public class PostController {
     @PostMapping(value = "/create-post/{id}", headers = "content-type=multipart/*")
     public ResponseEntity<?> createPost(@PathVariable long id, @RequestParam("description") String description, @RequestParam("content") MultipartFile content) {
         UserDBO userDBO = userService.readById(id);
-        postService.createPost(userDBO.getUserId(), description, content);
+        if(content.getOriginalFilename() != "nullFile"){
+            postService.createPost(userDBO.getUserId(), description, content);
+        }
+        else{
+            postService.createPostWithoutContent(userDBO.getUserId(), description);
+        }
         return ResponseEntity.ok("Post created successfully");
     }
 
