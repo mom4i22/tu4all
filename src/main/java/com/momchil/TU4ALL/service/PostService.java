@@ -1,7 +1,9 @@
 package com.momchil.TU4ALL.service;
 
+import com.momchil.TU4ALL.dbo.CommentDBO;
 import com.momchil.TU4ALL.dbo.PostDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.repository.CommentRepository;
 import com.momchil.TU4ALL.repository.FriendshipRepository;
 import com.momchil.TU4ALL.repository.PostRepository;
 import com.momchil.TU4ALL.repository.UserRepository;
@@ -23,15 +25,16 @@ public class PostService {
     static org.slf4j.Logger logger = LoggerFactory.getLogger(PostService.class);
 
     private PostRepository postRepository;
-
     private UserRepository userRepository;
     private FriendshipRepository friendshipRepository;
+    private CommentRepository commentRepository;
 
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, FriendshipRepository friendshipRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, FriendshipRepository friendshipRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.friendshipRepository = friendshipRepository;
+        this.commentRepository = commentRepository;
     }
 
     public PostDBO readById(long id) {
@@ -90,6 +93,10 @@ public class PostService {
     public boolean deleteByPostId(long id) {
         try {
             PostDBO postDBO = postRepository.findById(id).get();
+            List<CommentDBO> commentDBOS = commentRepository.findAllByPost(postDBO);
+            for(CommentDBO commentDBO : commentDBOS) {
+                commentRepository.delete(commentDBO);
+            }
             postRepository.delete(postDBO);
             return true;
         } catch (Exception e) {

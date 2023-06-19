@@ -46,9 +46,9 @@ public class UserController {
 
 
     @PutMapping("/edit-user/{id}")
-    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("alias") String alias, @RequestParam("name") String name, @RequestParam("dateOfBirth") String dateOfBirth,
+    public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("name") String name, @RequestParam("dateOfBirth") String dateOfBirth,
                                       @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePicture) throws ParseException {
-        userService.editUserWithProfilePic(id, alias, name, dateOfBirth, faculty, facultyNumber, profilePicture);
+        userService.editUserWithProfilePic(id, name, dateOfBirth, faculty, facultyNumber, profilePicture);
         return ResponseEntity.ok("Edit user successfully");
     }
 
