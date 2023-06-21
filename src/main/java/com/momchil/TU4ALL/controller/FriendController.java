@@ -1,10 +1,6 @@
 package com.momchil.TU4ALL.controller;
 
-import com.momchil.TU4ALL.Constants;
-import com.momchil.TU4ALL.dbo.FriendshipDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
-import com.momchil.TU4ALL.model.AddFriendRequest;
-import com.momchil.TU4ALL.model.BlockUserRequest;
 import com.momchil.TU4ALL.model.FriendRequestAction;
 import com.momchil.TU4ALL.service.FriendshipService;
 import com.momchil.TU4ALL.service.UserService;

@@ -1,5 +1,6 @@
 package com.momchil.TU4ALL.controller;
 
+import com.momchil.TU4ALL.dbo.CourseDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
 import com.momchil.TU4ALL.service.UserService;
 import com.momchil.TU4ALL.utils.Roles;
@@ -31,19 +32,17 @@ public class UserController {
                                         @RequestParam("password") String password, @RequestParam("dateOfBirth") String dateOfBirth,
                                         @RequestParam("faculty") String faculty, @RequestParam String facultyNumber, @RequestParam("profilePic") MultipartFile profilePic) {
         try {
-            userService.createUserWithPicture(alias, name, email, password, dateOfBirth, faculty, facultyNumber, Roles.ROLE_ADMIN.getValue(), profilePic);
+            if(email.contains("teacher")){
+                userService.createUserWithPicture(alias, name, email, password, dateOfBirth, faculty, facultyNumber, Roles.ROLE_ADMIN.getValue(), profilePic);
+            }
+            else{
+                userService.createUserWithPicture(alias, name, email, password, dateOfBirth, faculty, facultyNumber, Roles.ROLE_USER.getValue(), profilePic);
+            }
         } catch (ParseException e) {
             logger.error(e.getMessage());
         }
         return ResponseEntity.ok("User created successfully");
     }
-
-//    @PostMapping(value = "/create-user")
-//    public ResponseEntity<?> createUser(@RequestBody UserDBO userDBO) {
-//        userService.createUser(userDBO);
-//        return ResponseEntity.ok(userDBO);
-//    }
-
 
     @PutMapping("/edit-user/{id}")
     public ResponseEntity<?> editUser(@PathVariable long id, @RequestParam("name") String name, @RequestParam("dateOfBirth") String dateOfBirth,
@@ -82,6 +81,18 @@ public class UserController {
             logger.info("[getPeople] No other users found");
         }
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/get-all-users/{id}")
+    public ResponseEntity<List<UserDBO>> getAllUsers(@PathVariable long id, @RequestParam("courseId") String courseId) {
+        List<UserDBO> userDBOS = userService.readAll(id, Long.parseLong(courseId));
+        return ResponseEntity.ok(userDBOS);
+    }
+
+    @GetMapping("/get-all-courses-for-user/{id}")
+    public ResponseEntity<List<CourseDBO>> getAllCoursesForStudent(@PathVariable long id) {
+        List<CourseDBO> courseDBOS = userService.readAllCoursesForUser(id);
+        return ResponseEntity.ok(courseDBOS);
     }
 
 }

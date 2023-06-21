@@ -19,13 +19,11 @@ public class FriendshipDBO {
     @Column(name = "FRIENDSHIP_ID", nullable = false)
     private long friendshipId;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private UserDBO user;
+    @Column(name = "USER_ID")
+    private long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "FRIEND_ID")
-    private UserDBO friend;
+    @Column(name = "FRIEND_ID")
+    private long friendId;
 
     @Column(name = "STATUS")
     private int status;

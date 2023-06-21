@@ -1,5 +1,6 @@
 package com.momchil.TU4ALL.dbo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,7 +36,7 @@ public class UserDBO {
     @Column(name = "FACULTY")
     private String faculty;
 
-    @Column(name = "FACULTY_NUMBER", unique = true)
+    @Column(name = "FACULTY_NUMBER", unique = true, nullable = true)
     private String facultyNumber;
 
     @Column(name = "PROFILE_PICTURE")
@@ -51,7 +52,8 @@ public class UserDBO {
     @Column(name = "COMMENT_NOTIFICATIONS")
     private int commentNotifications;
 
-}
+    @JsonIgnore()
+    @ManyToMany(mappedBy = "students")
+    private List<CourseDBO> courses;
 
-//    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-//    private List<CommentDBO> comments = new ArrayList<>();
+}

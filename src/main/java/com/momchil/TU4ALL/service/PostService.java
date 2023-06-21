@@ -139,8 +139,19 @@ public class PostService {
 
         List<PostDBO> myFeed = new ArrayList<>();
 
-        List<UserDBO> myFriends1 = friendshipRepository.findAllMyFriends(userId);
-        List<UserDBO> myFriends2 = friendshipRepository.findAllMyFriends2(userId);
+        List<UserDBO> myFriends1 = new ArrayList<>();
+        List<UserDBO> myFriends2 = new ArrayList<>();
+
+        List<Long> myFriendsIds1 = friendshipRepository.findAllMyFriends(userId);
+        for(long id : myFriendsIds1) {
+            UserDBO userDBO = userRepository.findById(id).get();
+            myFriends1.add(userDBO);
+        }
+        List<Long> myFriendsIds2 = friendshipRepository.findAllMyFriends2(userId);
+        for(long id : myFriendsIds2) {
+            UserDBO userDBO = userRepository.findById(id).get();
+            myFriends2.add(userDBO);
+        }
 
         List<UserDBO> combinedFriends = new ArrayList<>(myFriends1);
         combinedFriends.addAll(myFriends2);

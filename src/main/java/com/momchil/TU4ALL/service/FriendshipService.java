@@ -41,10 +41,30 @@ public class FriendshipService {
         UserDBO user = userRepository.findById(userId).get();
 
         List<UserDBO> allUsers = userRepository.findAll();
-        List<UserDBO> friendUsers = friendshipRepository.findAllMyFriends(userId);
-        List<UserDBO> friendUsers2 = friendshipRepository.findAllMyFriends2(userId);
-        List<UserDBO> usersWhoReqMe = friendshipRepository.findWhoRequestedMe(userId);
-        List<UserDBO> usersWhoIReq = friendshipRepository.findWhoIRequested(userId);
+        List<UserDBO> friendUsers = new ArrayList<>();
+        List<UserDBO> friendUsers2 = new ArrayList<>();
+        List<UserDBO> usersWhoReqMe = new ArrayList<>();
+        List<UserDBO> usersWhoIReq = new ArrayList<>();
+        List<Long> friendUsersIds = friendshipRepository.findAllMyFriends(userId);
+        for (long id : friendUsersIds) {
+            UserDBO friend = userRepository.findById(id).get();
+            friendUsers.add(friend);
+        }
+        List<Long> friendUsers2Ids = friendshipRepository.findAllMyFriends2(userId);
+        for (long id : friendUsers2Ids) {
+            UserDBO friend = userRepository.findById(id).get();
+            friendUsers2.add(friend);
+        }
+        List<Long> usersWhoReqMeIds = friendshipRepository.findWhoRequestedMe(userId);
+        for (long id : usersWhoReqMeIds) {
+            UserDBO friend = userRepository.findById(id).get();
+            usersWhoReqMe.add(friend);
+        }
+        List<Long> usersWhoIReqIds = friendshipRepository.findWhoIRequested(userId);
+        for (long id : usersWhoIReqIds) {
+            UserDBO friend = userRepository.findById(id).get();
+            usersWhoIReq.add(friend);
+        }
 
         List<UserDBO> nonFriendUsers = new ArrayList<>(allUsers);
 
@@ -58,7 +78,13 @@ public class FriendshipService {
     }
 
     public List<UserDBO> getRequestsOfUser(long userId) {
-        return friendshipRepository.findWhoRequestedMe(userId);
+        List<UserDBO> userDBOS = new ArrayList<>();
+        List<Long> requestersIds = friendshipRepository.findWhoRequestedMe(userId);
+        for (long id : requestersIds) {
+            UserDBO userDBO = userRepository.findById(id).get();
+            userDBOS.add(userDBO);
+        }
+        return userDBOS;
     }
 
     public void sendFriendRequest(long userId, long friendId) {
@@ -66,20 +92,13 @@ public class FriendshipService {
         UserDBO friend = userRepository.findById(friendId).get();
 
         FriendshipDBO friendship = new FriendshipDBO();
-        friendship.setUser(user);
-        friendship.setFriend(friend);
+        friendship.setUserId(user.getUserId());
+        friendship.setFriendId(friend.getUserId());
         friendship.setStatus(Constants.FRIEND_STATUS_REQUESTED);
 
         List<UserDBO> allUsers = userRepository.findAll();
         List<UserDBO> nonFriendUsers = new ArrayList<>(allUsers);
         nonFriendUsers.remove(friend);
-
-//        FriendshipDBO oldFriendship = friendshipRepository.findOldRecords(userId);
-//        Long value = oldFriendship.getFriendshipId();
-//        if(value != null){
-//            friendshipRepository.delete(oldFriendship);
-//        }
-
 
         friendshipRepository.save(friendship);
     }
@@ -100,8 +119,18 @@ public class FriendshipService {
     }
 
     public List<UserDBO> getFriendsOfUser(long userId) {
-        List<UserDBO> myFriends1 = friendshipRepository.findAllMyFriends(userId);
-        List<UserDBO> myFriends2 = friendshipRepository.findAllMyFriends2(userId);
+        List<UserDBO> myFriends1 = new ArrayList<>();
+        List<UserDBO> myFriends2 = new ArrayList<>();
+        List<Long> myFriendsIds1 = friendshipRepository.findAllMyFriends(userId);
+        for(long id : myFriendsIds1) {
+            UserDBO userDBO = userRepository.findById(id).get();
+            myFriends1.add(userDBO);
+        }
+        List<Long> myFriendsIds2 = friendshipRepository.findAllMyFriends2(userId);
+        for(long id : myFriendsIds2) {
+            UserDBO userDBO = userRepository.findById(id).get();
+            myFriends2.add(userDBO);
+        }
         List<UserDBO> combinedFriends = new ArrayList<>(myFriends1);
         combinedFriends.addAll(myFriends2);
 

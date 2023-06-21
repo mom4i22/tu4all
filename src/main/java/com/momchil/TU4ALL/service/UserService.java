@@ -1,7 +1,8 @@
 package com.momchil.TU4ALL.service;
 
-import com.momchil.TU4ALL.dbo.FriendshipDBO;
+import com.momchil.TU4ALL.dbo.CourseDBO;
 import com.momchil.TU4ALL.dbo.UserDBO;
+import com.momchil.TU4ALL.repository.CourseRepository;
 import com.momchil.TU4ALL.repository.FriendshipRepository;
 import com.momchil.TU4ALL.repository.UserRepository;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -28,10 +30,13 @@ public class UserService {
 
     private FriendshipRepository friendshipRepository;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FriendshipRepository friendshipRepository) {
+    private CourseRepository courseRepository;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FriendshipRepository friendshipRepository, CourseRepository courseRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.friendshipRepository = friendshipRepository;
+        this.courseRepository = courseRepository;
     }
 
     public UserDBO readByEmail(String email) {
@@ -49,6 +54,16 @@ public class UserService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public List<UserDBO> readAll(long id, long courseId) {
+        UserDBO userDBO = userRepository.findById(id).get();
+        List<UserDBO> userDBOS = userRepository.findAll();
+        List<UserDBO> found = courseRepository.findUsersByCourseId(courseId);
+
+        userDBOS.remove(userDBO);
+        userDBOS.removeAll(found);
+        return userDBOS;
     }
 
     public void createUserWithPicture(String alias, String name, String email, String password, String dateOfBirth, String faculty, String facultyNumber, String role, MultipartFile profilePic) throws ParseException {
@@ -136,4 +151,11 @@ public class UserService {
     public UserDBO readByAlias(String alias) {
         return userRepository.findByAlias(alias);
     }
+
+    public List<CourseDBO> readAllCoursesForUser(long userId) {
+        UserDBO userDBO = userRepository.findById(userId).get();
+        List<CourseDBO> courseDBOS = userRepository.findAllByStudent(userDBO);
+        return courseDBOS;
+    }
+
 }

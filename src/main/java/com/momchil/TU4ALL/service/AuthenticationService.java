@@ -40,7 +40,7 @@ public class AuthenticationService {
             logger.info("Authentication is successful");
             logger.info("Authentication is successful for user with data: {}", userDetails);
             return new AuthenticationResponse(jwt, userDBO.getEmail(), userDBO.getPassword(), userDBO.getUserId(), userDBO.getAlias(),
-                    userDBO.getName(), userDBO.getProfilePicture(), userDBO.getLikeNotifications(), userDBO.getCommentNotifications());
+                    userDBO.getName(), userDBO.getProfilePicture(), userDBO.getLikeNotifications(), userDBO.getCommentNotifications(), userDBO.getRole());
         } catch (BadCredentialsException e) {
             logger.error("Authentication failed: " + e.getMessage());
             throw e;

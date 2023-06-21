@@ -27,4 +27,6 @@ public class AuthenticationResponse {
 
     private int commentNotifications;
 
+    private String role;
+
 }
