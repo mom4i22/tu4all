@@ -52,7 +52,7 @@ public class UserDBO {
     @Column(name = "COMMENT_NOTIFICATIONS")
     private int commentNotifications;
 
-    @JsonIgnore()
+    @JsonIgnore
     @ManyToMany(mappedBy = "students")
     private List<CourseDBO> courses;
 
