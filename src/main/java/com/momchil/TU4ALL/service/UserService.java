@@ -56,6 +56,10 @@ public class UserService {
         }
     }
 
+    public List<UserDBO> readAllWithoutCourses() {
+        return userRepository.findAll();
+    }
+
     public List<UserDBO> readAll(long id, long courseId) {
         UserDBO userDBO = userRepository.findById(id).get();
         List<UserDBO> userDBOS = userRepository.findAll();
@@ -87,6 +91,14 @@ public class UserService {
         userDBO.setFaculty(faculty);
         userDBO.setFacultyNumber(facultyNumber);
         userDBO.setRole(role);
+        try {
+            userRepository.save(userDBO);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void createUserWithoutPicture(UserDBO userDBO) {
         try {
             userRepository.save(userDBO);
         } catch (Exception e) {

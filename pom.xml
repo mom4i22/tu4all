@@ -14,7 +14,7 @@
     <name>TU4ALL</name>
     <description>A social media for the students of TU-Sofia</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.11</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.4.0</version>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -98,6 +98,13 @@
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.220</version>
             <scope>test</scope>
         </dependency>
 
