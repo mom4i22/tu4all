@@ -1762,18 +1762,6 @@ public class AppUtils {
         return result;
     }
 
-    public static String getGMTOffsetAsString(Calendar calendar) {
-        if (calendar == null) calendar = Calendar.getInstance();
-        TimeZone mTimeZone = calendar.getTimeZone();
-        int mGMTOffset = mTimeZone.getRawOffset();
-//        System.out.printf("GMT offset is %s hours", TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS));
-        int timeOffsetInteger = (int) TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
-        String timeOffsetString = AppUtils.formatInteger(timeOffsetInteger, 2);
-        if (!timeOffsetString.contains("-") && !timeOffsetString.contains("+"))
-            timeOffsetString = "+" + timeOffsetString;
-        return timeOffsetString;
-    }
-
     public static synchronized String paddingString(String targetString,
                                                     int size,
                                                     char paddingCharacter,
